@@ -13,19 +13,16 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 
-const emitTest = socket => {
-    const response = "hello world"
-
-    console.log("EMITTING")
-    socket.emit("test", response);
-};
-
-
 io.on("connection", (socket) => {
 
     console.log("New client connected");
 
-    emitTest(socket)
+    // once a client has connected, we expect to get a ping from them saying what room they want to join
+    socket.on('room', function (room) {
+
+        console.log("TESTING", room)
+        socket.join(room);
+    });
 
     socket.on("disconnect", () => {
         console.log("Client disconnected");
