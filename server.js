@@ -12,22 +12,37 @@ const server = http.createServer(app);
 
 const io = socketIo(server);
 
+let roomsList = []
+
 
 io.on("connection", (socket) => {
 
-    console.log("New client connected");
+    console.log("client connected");
+    io.emit("roomList", roomsList)
 
     // once a client has connected, we expect to get a ping from them saying what room they want to join
-    socket.on('room', function (room) {
-
-        console.log("TESTING", room)
+    socket.on('createRoom', function (room) {
+        console.log(room)
+        roomsList.push(room)
         socket.join(room);
+        io.emit("roomList", roomsList)
     });
+
+    socket.on("joinRoom", function (room) {
+        console.log("enter room", room)
+        socket.join(room);
+        socket.emit("joinedRoom", room)
+        //socket.in(room).emit('message', 'welcome');
+    })
 
     socket.on("disconnect", () => {
         console.log("Client disconnected");
     });
 });
+
+
+
+
 
 
 

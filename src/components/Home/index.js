@@ -1,29 +1,39 @@
 import React, { useState, useEffect } from "react"
 import { v4 as uuidv4 } from 'uuid';
-import socketIOClient from "socket.io-client";
+
+
+import RoomList from "../RoomList"
+
+import socketIO from "../socket-client";
 
 
 
 
 const Home = () => {
 
-    const [newRoomPassword, setNewRoomPassword] = useState("")
-    const newPasswordHandle = (event) => {
-        event.preventDefault()
-        setNewRoomPassword(event.target.value)
-    }
+    //const [socketIO, setSocketIO] = useState(socketIOClient(process.env.REACT_APP_SOCKET_ENDPOINT))
+    const [roomId, setRoomId] = useState(null)
+
 
     const create = () => {
 
         const roomId = uuidv4();
-        console.log("room id", roomId)
-        console.log("password", newRoomPassword)
-        console.log("created")
-        const socket = socketIOClient(process.env.REACT_APP_SOCKET_ENDPOINT);
-        socket.emit('room', { roomId: roomId, password: newRoomPassword });
+        socketIO.emit('createRoom', roomId);
+
     }
 
     useEffect(() => {
+
+        socketIO.on("joinedRoom", function (data) {
+            console.log(data);
+        });
+
+
+
+        return () => {
+            socketIO.off("joinedRoom")
+        }
+
 
     }, []);
 
@@ -34,8 +44,6 @@ const Home = () => {
 
             <div className="form-flex">
                 <h3 align="center">Create new Room</h3>
-                <label>password</label>
-                <input onChange={(e) => newPasswordHandle(e)} value={newRoomPassword} name="newRoomPassword" type="text" />
                 <button onClick={() => create()}>Create</button>
             </div>
 
@@ -47,6 +55,9 @@ const Home = () => {
                 <input type="text" />
                 <button>Connect</button>
             </div>
+
+            {socketIO && (<RoomList />)}
+
 
         </div>
 
