@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from "react"
 
 import socketIO from "../socket-client";
+import { useHistory } from "react-router-dom"
 
 const RoomList = () => {
 
     const [rooms, setRooms] = useState(null)
+    const history = useHistory()
+
+    const joinRoom = (room) => {
+        socketIO.emit('joinRoom', room)
+        history.push("/game")
+    }
 
     useEffect(() => {
 
@@ -23,7 +30,7 @@ const RoomList = () => {
         <div>
             <h2>rooms available</h2>
             {rooms && rooms.map((value, index) => {
-                return <div key={index}>Room id {value}  <button onClick={() => socketIO.emit('joinRoom', value)}><span>entrar</span></button></div>
+                return <div key={index}>Room id {value.id}  <button onClick={() => joinRoom(value)}><span>entrar</span></button></div>
             })}
         </div>
 

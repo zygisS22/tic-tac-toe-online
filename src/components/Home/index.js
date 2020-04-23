@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { v4 as uuidv4 } from 'uuid';
 
+import { useHistory } from "react-router-dom"
 
 import RoomList from "../RoomList"
 
@@ -13,12 +14,14 @@ const Home = () => {
 
     //const [socketIO, setSocketIO] = useState(socketIOClient(process.env.REACT_APP_SOCKET_ENDPOINT))
     const [roomId, setRoomId] = useState(null)
+    const history = useHistory()
 
 
     const create = () => {
 
         const roomId = uuidv4();
         socketIO.emit('createRoom', roomId);
+        history.push("/game")
 
     }
 
