@@ -7,19 +7,31 @@ import { useHistory } from "react-router-dom"
 
 const Game = () => {
 
-    const [player2, setPlayer2] = useState(false)
+    const [gameStatus, setGameStatus] = useState(false)
     const history = useHistory()
     useEffect(() => {
 
-        socketIO.on("joinedRoom", function (data) {
+        socketIO.on("joinedRoom", function () {
             socketIO.emit("ready")
+        });
+
+        socketIO.on("initGame", function (data) {
+
+            socketIO.emit("startGame")
+        });
+
+        socketIO.on("playGame", function (data) {
+
+            setGameStatus(true)
+
+            //socketIO.emit("startGame")
         });
 
 
 
-        return () => {
-            socketIO.off("joinedRoom")
-        }
+        // return () => {
+        //     socketIO.off("joinedRoom")
+        // }
 
 
     }, []);
@@ -28,7 +40,7 @@ const Game = () => {
         <div>
             <h2>Game</h2><br />
             <button onClick={() => history.push("/")}>Go back</button>
-            {player2 ? (<Board />) : (<p>Waiting for a player to join...</p>)}
+            {gameStatus ? (<Board />) : (<p>Waiting for a player to join...</p>)}
         </div>
 
     )
