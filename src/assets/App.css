@@ -59,8 +59,8 @@
 
 .board-container {
   display:grid;
-  grid-template-columns: repeat(3, 100px);
-  grid-template-rows: repeat(3, 100px);
+  grid-template-columns: repeat(3, 300px);
+  grid-template-rows: repeat(3, 300px);
   border: 2px solid black;
   align-items: center;
   width: 300px;

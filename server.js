@@ -67,7 +67,22 @@ io.on("connection", (socket) => {
         const newRoom = {
             id: room,
             name: room,
-            sockets: []
+            sockets: [],
+            game: {
+                currentTurn: null,
+                moves: 0,
+                board: {
+                    0: 0,
+                    1: 0,
+                    2: 0,
+                    3: 0,
+                    4: 0,
+                    5: 0,
+                    6: 0,
+                    7: 0,
+                    8: 0,
+                },
+            }
         }
 
 
@@ -96,21 +111,90 @@ io.on("connection", (socket) => {
         let room = getRoom(socket.roomId)
 
         if (room && room.sockets.length == 2) {
-            for (const id of room.sockets) {
 
+            console.log("initialize game")
 
-                const socket = io.of("/").connected[id];
+            let room = getRoom(socket.roomId)
 
-                //console.log("socket", socket)
+            let firstTurn = room.sockets[Math.floor(Math.random())]
 
-                socket.emit("initGame")
-            }
+            room.game.currentTurn = firstTurn
+
+            //
+
+            let updatedRoom = roomsList.map(value => {
+                if (value.id == room.id) {
+                    return value = room
+                }
+            })
+
+            roomsList = updatedRoom
+
+            //
+
+            io.in(socket.roomId).emit('playGame', room);
+
         }
     })
 
-    socket.on("startGame", () => {
-        io.sockets.in(socket.roomId).emit('playGame');
+    socket.on("turnPlayed", (room) => {
+
+        console.log("Turn played")
+
+        let nextTurn = room.sockets.find(socket => socket != room.game.currentTurn);
+
+        room.game.currentTurn = nextTurn
+        room.game.moves = room.game.moves + 1
+
+        //
+
+        let updatedRoom = roomsList.map(value => {
+            if (value.id == room.id) {
+                return value = room
+            }
+        })
+
+        roomsList = updatedRoom
+
+        //
+
+
+        console.log(updatedRoom)
+
+        console.log("Next Turn")
+
+        io.in(socket.roomId).emit('nextTurn', room);
+
+
+
     })
+
+    socket.on("startGame", () => {
+
+        console.log("Start game")
+
+        let room = getRoom(socket.roomId)
+
+        let firstTurn = room.sockets[Math.floor(Math.random())]
+
+        room.game.currentTurn = firstTurn
+
+        //
+
+        let updatedRoom = roomsList.map(value => {
+            if (value.id == room.id) {
+                return value = room
+            }
+        })
+
+        roomsList = updatedRoom
+
+        //
+
+        io.in(socket.roomId).emit('playGame', room);
+    })
+
+
 
     socket.on("disconnect", () => {
         console.log("Client disconnected");
