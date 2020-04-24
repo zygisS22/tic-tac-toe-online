@@ -23,16 +23,7 @@ const Game = () => {
         socketIO.on("playGame", function (data) {
 
             setGameStatus(true)
-
-            //socketIO.emit("startGame")
         });
-
-
-
-        // return () => {
-        //     socketIO.off("joinedRoom")
-        // }
-
 
     }, []);
 

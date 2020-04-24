@@ -109,7 +109,6 @@ io.on("connection", (socket) => {
     })
 
     socket.on("startGame", () => {
-        console.log(socket.id, "starting game")
         io.sockets.in(socket.roomId).emit('playGame');
     })
 

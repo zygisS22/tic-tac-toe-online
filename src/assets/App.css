@@ -55,3 +55,24 @@
   margin: 5px 0;
 
 }
+
+
+.board-container {
+  display:grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  border: 2px solid black;
+  align-items: center;
+  width: 300px;
+
+}
+
+.board-container .square {
+  text-align: center;
+  border: 2px solid black;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
