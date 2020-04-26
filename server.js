@@ -14,6 +14,8 @@ const io = socketIo(server);
 
 let roomsList = []
 
+const winConditions = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [6, 4, 2]];
+
 const playerJoin = (socket, room) => {
     socket.join(room.id, () => {
         socket.roomId = room.id
@@ -22,6 +24,43 @@ const playerJoin = (socket, room) => {
     room.sockets.push(socket.id)
 
     socket.emit("joinedRoom", room)
+
+}
+
+const checkWinner = (room) => {
+
+    const board = room.game.board
+
+    let player1Selections = {}
+    let player2Selections = {}
+    let winner = ""
+
+    Object.values(board).map((value, index) => {
+        if (value == room.sockets[0]) {
+            player1Selections[index] = value
+        } else if (value == room.sockets[1]) {
+            player2Selections[index] = value
+        }
+    })
+
+    player1Selections = Object.keys(player1Selections)
+    player2Selections = Object.keys(player2Selections)
+
+    winConditions.forEach(array => {
+        let winPlayer1 = player1Selections.length == 3 ? player1Selections.every(e => array.includes(parseInt(e))) : false
+        let winPlayer2 = player2Selections.length == 3 ? player2Selections.every(e => array.includes(parseInt(e))) : false
+
+        if (winPlayer1) {
+            winner = room.sockets[0]
+        } else if (winPlayer2) {
+            winner = room.sockets[1]
+        }
+    })
+
+
+    if (player1Selections.length == 3 && player2Selections.length == 3 && !winner) return "draw"
+
+    return winner
 
 }
 
@@ -70,6 +109,7 @@ io.on("connection", (socket) => {
             sockets: [],
             game: {
                 currentTurn: null,
+                winner: null,
                 moves: 0,
                 board: {
                     0: 0,
@@ -141,30 +181,39 @@ io.on("connection", (socket) => {
 
         console.log("Turn played")
 
-        let nextTurn = room.sockets.find(socket => socket != room.game.currentTurn);
+        //check Winner
+        const winner = checkWinner(room)
 
-        room.game.currentTurn = nextTurn
-        room.game.moves = room.game.moves + 1
+        if (winner.length > 0) {
 
-        //
+            console.log("Game Finished")
 
-        let updatedRoom = roomsList.map(value => {
-            if (value.id == room.id) {
-                return value = room
-            }
-        })
+            room.game.winner = winner
 
-        roomsList = updatedRoom
+            io.in(socket.roomId).emit('gameFinished', room);
 
-        //
+        } else {
+            let nextTurn = room.sockets.find(socket => socket != room.game.currentTurn);
 
+            room.game.currentTurn = nextTurn
+            room.game.moves = room.game.moves + 1
 
-        console.log(updatedRoom)
+            //
 
-        console.log("Next Turn")
+            let updatedRoom = roomsList.map(value => {
+                if (value.id == room.id) {
+                    return value = room
+                }
+            })
 
-        io.in(socket.roomId).emit('nextTurn', room);
+            roomsList = updatedRoom
 
+            //
+
+            console.log("Next Turn")
+
+            io.in(socket.roomId).emit('nextTurn', room);
+        }
 
 
     })

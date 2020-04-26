@@ -59,11 +59,11 @@
 
 .board-container {
   display:grid;
-  grid-template-columns: repeat(3, 300px);
-  grid-template-rows: repeat(3, 300px);
+  grid-template-columns: repeat(3, 120px);
+  grid-template-rows: repeat(3, 120px);
   border: 2px solid black;
   align-items: center;
-  width: 300px;
+  width: 360px;
 
 }
 
@@ -74,5 +74,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 0.5rem;
 
 }

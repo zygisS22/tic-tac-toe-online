@@ -26,12 +26,6 @@ const Board = ({ gameInfo, player }) => {
 
     const handleSquare = (boardNumber) => {
 
-        console.log("player id", player)
-        console.log("CurrentTurn", gameInfo.game.currentTurn)
-
-        console.log(gameInfo.game.board[boardNumber] == 0)
-        console.log(player == gameInfo.game.currentTurn)
-
         if (gameInfo.game.board[boardNumber] == 0 && player == gameInfo.game.currentTurn) {
 
             let updateGame = gameInfo
@@ -42,7 +36,6 @@ const Board = ({ gameInfo, player }) => {
 
             console.log("Turno jugado")
 
-
         }
     }
 
@@ -52,13 +45,9 @@ const Board = ({ gameInfo, player }) => {
         <div>
             <h2>board</h2>
 
-            {/* <h4> --> {turn ? "Your Turn" : "Opponents Turn"}</h4> */}
+            <h4> --> {player == gameInfo.game.currentTurn ? "Your Turn" : "Opponents Turn"}</h4>
 
             <div className="board-container">
-                {/* {board.map(item => {
-                    return <div className="square">HI</div>
-                })} */}
-
                 {gameInfo && gameInfo.game && Object.keys(gameInfo.game.board).map(function (key, index) {
                     return <div className="square" onClick={() => handleSquare(key)}>{gameInfo.game.board[key]}</div>
                 })}

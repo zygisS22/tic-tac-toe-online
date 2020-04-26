@@ -29,12 +29,18 @@ const Game = () => {
         socketIO.on("playGame", function (data) {
             console.log(data)
             setGameInfo(data)
-            setGameStatus(true)
+            setGameStatus("playing")
         });
 
         socketIO.on("nextTurn", function (room) {
             console.log("new Data", room)
             setGameInfo(room)
+        })
+
+        socketIO.on("gameFinished", function (room) {
+            console.log("game Finished", room)
+            setGameInfo(room)
+            setGameStatus("finished")
         })
 
     }, []);
@@ -43,7 +49,7 @@ const Game = () => {
         <div>
             <h2>Game</h2><br />
             <button onClick={() => history.push("/")}>Go back</button>
-            {gameStatus ? (<Board gameInfo={gameInfo} player={player} />) : (<p>Waiting for a player to join...</p>)}
+            {gameStatus == "playing" ? (<Board gameInfo={gameInfo} player={player} />) : gameStatus == "finished" ? (<h2>The Winner is {gameInfo.game.winner} !</h2>) : (<p>Waiting for a player to join...</p>)}
         </div>
 
     )
