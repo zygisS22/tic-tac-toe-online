@@ -50,6 +50,7 @@ const Game = () => {
     return (
         <div>
             <h2>Game</h2><br />
+            {gameInfo && gameInfo.sockets && (<h3>{gameInfo.sockets[0][1]} - {gameInfo.sockets[1][1]}</h3>)}
             <button onClick={() => history.push("/")}>Go back</button>
             {gameStatus == "playing" ? (<Board gameInfo={gameInfo} player={player} />) : gameStatus == "finished" ? (
                 <div>
