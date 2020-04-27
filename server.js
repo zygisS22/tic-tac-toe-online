@@ -27,6 +27,31 @@ const playerJoin = (socket, room) => {
 
 }
 
+const checkSelections = (array, selections) => {
+
+
+    let found = []
+
+    console.log("array", selections)
+    selections.forEach(element2 => {
+        console.log("value", parseInt(element2))
+        console.log("FIND INDEX", array.indexOf(parseInt(element2)))
+
+        if (array.indexOf(parseInt(element2)) > -1) {
+            found.push(parseInt(element2))
+        }
+    })
+
+    console.log("FOUND", found)
+
+    if (found.length == 3) return true
+
+    return false
+
+
+
+}
+
 const checkWinner = (room) => {
 
     const board = room.game.board
@@ -47,8 +72,28 @@ const checkWinner = (room) => {
     player2Selections = Object.keys(player2Selections)
 
     winConditions.forEach(array => {
-        let winPlayer1 = player1Selections.length == 3 ? player1Selections.every(e => array.includes(parseInt(e))) : false
-        let winPlayer2 = player2Selections.length == 3 ? player2Selections.every(e => array.includes(parseInt(e))) : false
+
+
+        //const test = checkSelections(player1Selections, array)
+
+
+
+
+        //console.log("TEST", array.every(val => { return player1Selections.indexOf(parseInt(val)) >= 0; }));
+
+
+        // let winPlayer1 = player1Selections.length >= 3 ? array.every(e => player1Selections.includes(parseInt(e))) : false
+        // let winPlayer2 = player2Selections.length >= 3 ? array.every(e => player2Selections.includes(parseInt(e))) : false
+
+        const winPlayer1 = player1Selections.length >= 3 ? checkSelections(array, player1Selections) : false
+        const winPlayer2 = player2Selections.length >= 3 ? checkSelections(array, player2Selections) : false
+
+        console.log("winConditions", array)
+        console.log("player1", player1Selections)
+        console.log("player1 win", winPlayer1)
+        console.log("player2", player2Selections)
+        console.log("player2 win", winPlayer2)
+
 
         if (winPlayer1) {
             winner = room.sockets[0]
@@ -56,6 +101,8 @@ const checkWinner = (room) => {
             winner = room.sockets[1]
         }
     })
+
+    console.log("winner", winner)
 
     if (room.game.moves == 8 && !winner) return "draw"
 
