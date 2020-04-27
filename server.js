@@ -236,7 +236,26 @@ io.on("connection", (socket) => {
 
             room.game.winner = winner
 
-            io.in(socket.roomId).emit('gameFinished', room);
+            io.in(room.id).emit('gameFinished', room);
+
+
+            //Remove clients from ROOM
+            io.in(room.id).clients((error, socketIds) => {
+                if (error) throw error;
+
+                socketIds.forEach(socketId => io.sockets.sockets[socketId].leave(room.id));
+
+            });
+
+
+            //Remove Room from List
+            roomsList.map(value => {
+                if (value.id == room.id) {
+                    return delete (value)
+                } else {
+                    return value
+                }
+            })
 
         } else {
             let nextTurn = room.sockets.find(socket => socket != room.game.currentTurn);
