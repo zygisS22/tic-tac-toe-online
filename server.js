@@ -19,9 +19,9 @@ const winConditions = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2
 const playerJoin = (socket, room) => {
     socket.join(room.id, () => {
         socket.roomId = room.id
-        console.log(`Player ${socket.id} joined  room ${room.id}`)
+        console.log(`Player ${socket.id} with username ${socket.username} joined  room ${room.id}`)
     });
-    room.sockets.push(socket.id)
+    room.sockets.push([socket.id, socket.username])
 
     socket.emit("joinedRoom", room)
 
@@ -61,9 +61,9 @@ const checkWinner = (room) => {
     let winner = ""
 
     Object.values(board).map((value, index) => {
-        if (value == room.sockets[0]) {
+        if (value == room.sockets[0][0]) {
             player1Selections[index] = value
-        } else if (value == room.sockets[1]) {
+        } else if (value == room.sockets[1][0]) {
             player2Selections[index] = value
         }
     })
@@ -73,17 +73,6 @@ const checkWinner = (room) => {
 
     winConditions.forEach(array => {
 
-
-        //const test = checkSelections(player1Selections, array)
-
-
-
-
-        //console.log("TEST", array.every(val => { return player1Selections.indexOf(parseInt(val)) >= 0; }));
-
-
-        // let winPlayer1 = player1Selections.length >= 3 ? array.every(e => player1Selections.includes(parseInt(e))) : false
-        // let winPlayer2 = player2Selections.length >= 3 ? array.every(e => player2Selections.includes(parseInt(e))) : false
 
         const winPlayer1 = player1Selections.length >= 3 ? checkSelections(array, player1Selections) : false
         const winPlayer2 = player2Selections.length >= 3 ? checkSelections(array, player2Selections) : false
@@ -96,9 +85,9 @@ const checkWinner = (room) => {
 
 
         if (winPlayer1) {
-            winner = room.sockets[0]
+            winner = room.sockets[0][1]
         } else if (winPlayer2) {
-            winner = room.sockets[1]
+            winner = room.sockets[1][1]
         }
     })
 
@@ -146,6 +135,14 @@ io.on("connection", (socket) => {
     console.log("client connected");
     io.emit("roomList", roomsList)
 
+    socket.on("setUsername", function (data) {
+        socket.username = data
+    })
+
+    socket.on("getRooms", function () {
+        socket.emit("roomList", roomsList)
+    })
+
     // once a client has connected, we expect to get a ping from them saying what room they want to join
     socket.on('createRoom', function (room) {
 
@@ -188,7 +185,7 @@ io.on("connection", (socket) => {
         })
 
         roomsList = updatedRoom
-        //socket.in(room).emit('message', 'welcome');
+
     })
 
     socket.on("ready", function () {
@@ -202,11 +199,10 @@ io.on("connection", (socket) => {
 
             let room = getRoom(socket.roomId)
 
-            let firstTurn = room.sockets[Math.floor(Math.random())]
+            let firstTurn = room.sockets[Math.floor(Math.random() * Math.floor(2))][0]
 
             room.game.currentTurn = firstTurn
 
-            //
 
             let updatedRoom = roomsList.map(value => {
                 if (value.id == room.id) {
@@ -258,7 +254,7 @@ io.on("connection", (socket) => {
             })
 
         } else {
-            let nextTurn = room.sockets.find(socket => socket != room.game.currentTurn);
+            let nextTurn = room.sockets.find(socket => socket[0] != room.game.currentTurn)[0];
 
             room.game.currentTurn = nextTurn
             room.game.moves = room.game.moves + 1

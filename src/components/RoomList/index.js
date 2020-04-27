@@ -15,9 +15,11 @@ const RoomList = () => {
 
     useEffect(() => {
 
+        socketIO.emit("getRooms")
+
 
         socketIO.on("roomList", data => {
-            console.log(data)
+            console.log("rooms", data)
             setRooms(data)
         })
 

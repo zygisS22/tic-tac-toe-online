@@ -20,11 +20,11 @@ const Board = ({ gameInfo, player }) => {
 
         if (value == 0) {
             return ""
-        } else if (gameInfo.sockets[0] == value) {
+        } else if (gameInfo.sockets[0][0] == value) {
             //Player1
             return (<FontAwesomeIcon icon={faTimes} color="blue" />)
 
-        } else if (gameInfo.sockets[1] == value) {
+        } else if (gameInfo.sockets[1][0] == value) {
             //Player2
             return (<FontAwesomeIcon icon={faCircle} color="red" />)
         }

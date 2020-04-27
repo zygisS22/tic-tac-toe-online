@@ -22,6 +22,8 @@ const Game = () => {
 
     useEffect(() => {
 
+        console.log(socketIO)
+
         socketIO.on("joinedRoom", function () {
             socketIO.emit("ready")
         });
