@@ -57,8 +57,7 @@ const checkWinner = (room) => {
         }
     })
 
-
-    if (player1Selections.length == 3 && player2Selections.length == 3 && !winner) return "draw"
+    if (room.game.moves == 8 && !winner) return "draw"
 
     return winner
 

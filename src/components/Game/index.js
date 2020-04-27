@@ -49,7 +49,12 @@ const Game = () => {
         <div>
             <h2>Game</h2><br />
             <button onClick={() => history.push("/")}>Go back</button>
-            {gameStatus == "playing" ? (<Board gameInfo={gameInfo} player={player} />) : gameStatus == "finished" ? (<h2>The Winner is {gameInfo.game.winner} !</h2>) : (<p>Waiting for a player to join...</p>)}
+            {gameStatus == "playing" ? (<Board gameInfo={gameInfo} player={player} />) : gameStatus == "finished" ? (
+                <div>
+                    {gameInfo.game.winner == "draw" ? (<h2> {gameInfo.game.winner} !</h2>) : <h2> {gameInfo.game.winner} !</h2>}
+
+                </div>
+            ) : (<p>Waiting for a player to join...</p>)}
         </div>
 
     )

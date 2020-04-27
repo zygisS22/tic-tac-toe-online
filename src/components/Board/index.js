@@ -2,6 +2,11 @@ import React, { useEffect, useState } from "react"
 
 import socketIO from "../socket-client";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faCircle } from '@fortawesome/free-regular-svg-icons'
+
+
 
 
 
@@ -10,6 +15,23 @@ const Board = ({ gameInfo, player }) => {
 
     const [turn, setTurn] = useState(null)
     //const board = gameInfo.game.board
+
+    const printSimbol = (value) => {
+
+        if (value == 0) {
+            return ""
+        } else if (gameInfo.sockets[0] == value) {
+            //Player1
+            return (<FontAwesomeIcon icon={faTimes} color="blue" />)
+
+        } else if (gameInfo.sockets[1] == value) {
+            //Player2
+            return (<FontAwesomeIcon icon={faCircle} color="red" />)
+        }
+
+
+
+    }
 
 
     useEffect(() => {
@@ -32,6 +54,8 @@ const Board = ({ gameInfo, player }) => {
 
             updateGame.game.board[boardNumber] = player
 
+            console.log(updateGame)
+
             socketIO.emit("turnPlayed", updateGame)
 
             console.log("Turno jugado")
@@ -49,7 +73,7 @@ const Board = ({ gameInfo, player }) => {
 
             <div className="board-container">
                 {gameInfo && gameInfo.game && Object.keys(gameInfo.game.board).map(function (key, index) {
-                    return <div className="square" onClick={() => handleSquare(key)}>{gameInfo.game.board[key]}</div>
+                    return <div className="square" onClick={() => handleSquare(key)}>{printSimbol(gameInfo.game.board[key])}</div>
                 })}
             </div>
 
