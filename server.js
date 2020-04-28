@@ -245,13 +245,22 @@ io.on("connection", (socket) => {
 
 
             //Remove Room from List
-            roomsList.map(value => {
-                if (value.id == room.id) {
-                    return delete (value)
-                } else {
-                    return value
-                }
-            })
+
+            roomsList = roomsList.filter(value => value.id != room.id)
+
+            // roomsList.map(value => {
+            //     if (value.id == room.id) {
+            //         delete (value)
+            //     } else {
+            //         return value
+            //     }
+            // })
+
+            console.log(roomsList)
+
+            io.emit("roomList", roomsList)
+
+
 
         } else {
             let nextTurn = room.sockets.find(socket => socket[0] != room.game.currentTurn)[0];
