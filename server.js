@@ -139,6 +139,10 @@ io.on("connection", (socket) => {
         socket.username = data
     })
 
+    socket.on("getUsername", function () {
+        socket.emit("sendUsername", socket.username)
+    })
+
     socket.on("getRooms", function () {
         socket.emit("roomList", roomsList)
     })
@@ -247,14 +251,6 @@ io.on("connection", (socket) => {
             //Remove Room from List
 
             roomsList = roomsList.filter(value => value.id != room.id)
-
-            // roomsList.map(value => {
-            //     if (value.id == room.id) {
-            //         delete (value)
-            //     } else {
-            //         return value
-            //     }
-            // })
 
             console.log(roomsList)
 

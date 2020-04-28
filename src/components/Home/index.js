@@ -48,6 +48,18 @@ const Home = () => {
         // });
 
 
+        socketIO.emit("getUsername")
+
+        socketIO.on("sendUsername", data => {
+
+            if (data.length > 0) {
+                setUsername(data)
+                setAllowChange(false)
+            }
+
+
+        })
+
 
         return () => {
             socketIO.off("joinedRoom")
