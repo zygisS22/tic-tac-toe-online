@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react"
-
 import Board from "../Board"
 import socketIO from "../socket-client";
 import { useHistory } from "react-router-dom"
-
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { faCircle } from '@fortawesome/free-regular-svg-icons'
@@ -17,40 +14,31 @@ const Game = () => {
     const player = socketIO.id
     const history = useHistory()
 
-
     const circle = <FontAwesomeIcon icon={faCircle} color="red" />
     const times = <FontAwesomeIcon icon={faTimes} color="blue" />
 
     useEffect(() => {
 
-        console.log(socketIO)
-
         socketIO.on("joinedRoom", function (room) {
-
-            console.log("JOINED", room)
             setGameInfo(room)
             socketIO.emit("ready")
         });
 
         socketIO.on("playGame", function (data) {
-            console.log(data)
             setGameInfo(data)
             setGameStatus("playing")
         });
 
         socketIO.on("nextTurn", function (room) {
-            console.log("new Data", room)
             setGameInfo(room)
         })
 
         socketIO.on("gameFinished", function (room) {
-            console.log("game Finished", room)
             setGameInfo(room)
             setGameStatus("finished")
         })
 
         socketIO.on("abandonRoom", function (room) {
-            console.log("Abandon", room)
             history.push("/")
         })
 
@@ -58,11 +46,7 @@ const Game = () => {
 
 
     const leaveMatch = () => {
-
-        console.log("leave", gameInfo)
-
         socketIO.emit("leaveRoom", gameInfo)
-
         history.push("/")
     }
 

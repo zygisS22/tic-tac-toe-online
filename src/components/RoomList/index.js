@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-
 import socketIO from "../socket-client";
 import { useHistory } from "react-router-dom"
 
@@ -34,7 +33,7 @@ const RoomList = () => {
             {rooms && rooms.map((value, index) => {
 
                 if (value.sockets.length < 2) {
-                    return <div className="room-item" key={index}>Room id {value.id}  <button onClick={() => joinRoom(value)}><span>entrar</span></button></div>
+                    return <div className="room-item" key={index}>Room id {value.id}  <button onClick={() => joinRoom(value)}><span>join</span></button></div>
                 }
 
 

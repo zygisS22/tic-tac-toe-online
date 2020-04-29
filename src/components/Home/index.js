@@ -6,18 +6,15 @@ import socketIO from "../socket-client";
 
 const Home = () => {
 
-    const [roomId, setRoomId] = useState(null)
     const [username, setUsername] = useState("")
     const [allowChange, setAllowChange] = useState(true)
     const history = useHistory()
-
 
     const create = () => {
 
         const roomId = uuidv4();
         socketIO.emit('createRoom', roomId);
         history.push("/game")
-
     }
 
     const handleUsername = (e) => {
@@ -26,18 +23,14 @@ const Home = () => {
 
     const lockUsername = () => {
         if (username.length > 0) {
-
             socketIO.emit('setUsername', username)
-
             setAllowChange(false)
         }
-
     }
 
     useEffect(() => {
 
         socketIO.emit("getUsername")
-
         socketIO.on("sendUsername", data => {
 
             if (data && data.length > 0) {
@@ -47,14 +40,12 @@ const Home = () => {
 
         })
 
-
         return () => {
             socketIO.off("sendUsername")
         }
 
 
     }, []);
-
 
     return (
         <div>
@@ -81,11 +72,7 @@ const Home = () => {
 
                 </React.Fragment>
             )}
-
-
-
         </div>
-
 
     )
 }

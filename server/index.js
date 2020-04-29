@@ -114,19 +114,15 @@ const getRoom = (roomId) => {
 
 }
 
-const updateRoom = (roomId, data) => {
+const updateRoom = (newRoom) => {
 
-    const room = roomsList.map((room, index) => {
-        if (room.id == roomId) {
-            return room.game = data
+    let updatedRoom = roomsList.map(value => {
+        if (value.id == newRoom.id) {
+            return value = newRoom
         }
-
     })
 
-    console.log("UPDATE ROOM", room)
-
-    roomsList = room
-
+    roomsList = updatedRoom
 }
 
 const clearRoom = (roomId) => {
@@ -172,10 +168,8 @@ io.on("connection", (socket) => {
 
         socket.broadcast.in(room.id).emit("abandonRoom", room)
 
-
     })
 
-    // once a client has connected, we expect to get a ping from them saying what room they want to join
     socket.on('createRoom', function (room) {
 
         const newRoom = {
@@ -200,7 +194,6 @@ io.on("connection", (socket) => {
             }
         }
 
-
         playerJoin(socket, newRoom)
         roomsList.push(newRoom);
         io.emit("roomList", roomsList)
@@ -210,13 +203,7 @@ io.on("connection", (socket) => {
 
         playerJoin(socket, room)
 
-        let updatedRoom = roomsList.map(value => {
-            if (value.id == room.id) {
-                return value = room
-            }
-        })
-
-        roomsList = updatedRoom
+        updateRoom(room)
 
         io.emit("roomList", roomsList)
 
@@ -227,26 +214,18 @@ io.on("connection", (socket) => {
 
         let room = getRoom(socket.roomId)
 
+
+        //If 2 clients are in the room start
         if (room && room.sockets.length == 2) {
 
             console.log("initialize game")
 
             let room = getRoom(socket.roomId)
 
+            //random 0 1 por first turn
             let firstTurn = room.sockets[Math.floor(Math.random() * Math.floor(2))][0]
-
             room.game.currentTurn = firstTurn
-
-
-            let updatedRoom = roomsList.map(value => {
-                if (value.id == room.id) {
-                    return value = room
-                }
-            })
-
-            roomsList = updatedRoom
-
-            //
+            updateRoom(room)
 
             io.in(socket.roomId).emit('playGame', room);
 
@@ -257,7 +236,6 @@ io.on("connection", (socket) => {
 
         console.log("Turn played")
 
-        //check Winner
         const winner = checkWinner(room)
 
         if (winner.length > 0) {
@@ -276,18 +254,7 @@ io.on("connection", (socket) => {
             room.game.currentTurn = nextTurn
             room.game.moves = room.game.moves + 1
 
-            //
-
-            let updatedRoom = roomsList.map(value => {
-                if (value.id == room.id) {
-                    return value = room
-                }
-            })
-
-            roomsList = updatedRoom
-
-            //
-
+            updateRoom(room)
             console.log("Next Turn")
 
             io.in(socket.roomId).emit('nextTurn', room);
@@ -296,42 +263,9 @@ io.on("connection", (socket) => {
 
     })
 
-    socket.on("startGame", () => {
-
-        console.log("Start game")
-
-        let room = getRoom(socket.roomId)
-
-        let firstTurn = room.sockets[Math.floor(Math.random())]
-
-        room.game.currentTurn = firstTurn
-
-        //
-
-        let updatedRoom = roomsList.map(value => {
-            if (value.id == room.id) {
-                return value = room
-            }
-        })
-
-        roomsList = updatedRoom
-
-        //
-
-        io.in(socket.roomId).emit('playGame', room);
-    })
-
-
-
     socket.on("disconnect", () => {
         console.log("Client disconnected");
     });
 });
-
-
-
-
-
-
 
 server.listen(port, () => console.log(`Listening on port ${port}`));

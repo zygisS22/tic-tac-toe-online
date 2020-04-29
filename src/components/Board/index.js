@@ -1,20 +1,13 @@
-import React, { useEffect, useState } from "react"
-
+import React, { useEffect } from "react"
 import socketIO from "../socket-client";
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { faCircle } from '@fortawesome/free-regular-svg-icons'
 
 
-
-
-
 const Board = ({ gameInfo, player }) => {
 
-
-    const [turn, setTurn] = useState(null)
-    //const board = gameInfo.game.board
+    useEffect(() => { }, [gameInfo])
 
     const printSimbol = (value) => {
 
@@ -29,36 +22,14 @@ const Board = ({ gameInfo, player }) => {
             return (<FontAwesomeIcon icon={faCircle} color="red" />)
         }
 
-
-
     }
 
-
-    useEffect(() => {
-
-        console.log(gameInfo)
-
-        // if (player == gameInfo.game.currentTurn) {
-        //     setTurn(true)
-        // } else {
-        //     setTurn(false)
-        // }
-
-    }, [gameInfo])
-
     const handleSquare = (boardNumber) => {
-
+        //If its your turn and the board is empty
         if (gameInfo.game.board[boardNumber] == 0 && player == gameInfo.game.currentTurn) {
-
             let updateGame = gameInfo
-
             updateGame.game.board[boardNumber] = player
-
-            console.log(updateGame)
-
             socketIO.emit("turnPlayed", updateGame)
-
-            console.log("Turno jugado")
 
         }
     }
