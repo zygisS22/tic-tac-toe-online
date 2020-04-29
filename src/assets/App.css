@@ -81,3 +81,26 @@
 .square svg {
   font-size: 3rem;
 }
+
+
+.room-list {
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+
+}
+
+.room-item {
+  padding: 15px;
+  border: 2px solid grey;
+  border-radius: 10px;
+}
+
+.game-container {
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

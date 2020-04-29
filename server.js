@@ -129,6 +129,21 @@ const updateRoom = (roomId, data) => {
 
 }
 
+const clearRoom = (roomId) => {
+
+    //Remove clients from ROOM
+    io.in(roomId).clients((error, socketIds) => {
+        if (error) throw error;
+
+        socketIds.forEach(socketId => io.sockets.sockets[socketId].leave(roomId));
+
+    });
+
+    //Remove Room from List
+    roomsList = roomsList.filter(value => value.id != roomId)
+    io.emit("roomList", roomsList)
+}
+
 
 io.on("connection", (socket) => {
 
@@ -145,6 +160,17 @@ io.on("connection", (socket) => {
 
     socket.on("getRooms", function () {
         socket.emit("roomList", roomsList)
+    })
+
+    socket.on("leaveRoom", function (room) {
+
+        console.log("clear room");
+
+        if (room.id) {
+            clearRoom(room.id)
+        }
+
+
     })
 
     // once a client has connected, we expect to get a ping from them saying what room they want to join
@@ -189,6 +215,8 @@ io.on("connection", (socket) => {
         })
 
         roomsList = updatedRoom
+
+        io.emit("roomList", roomsList)
 
     })
 
@@ -238,25 +266,7 @@ io.on("connection", (socket) => {
 
             io.in(room.id).emit('gameFinished', room);
 
-
-            //Remove clients from ROOM
-            io.in(room.id).clients((error, socketIds) => {
-                if (error) throw error;
-
-                socketIds.forEach(socketId => io.sockets.sockets[socketId].leave(room.id));
-
-            });
-
-
-            //Remove Room from List
-
-            roomsList = roomsList.filter(value => value.id != room.id)
-
-            console.log(roomsList)
-
-            io.emit("roomList", roomsList)
-
-
+            clearRoom(room.id)
 
         } else {
             let nextTurn = room.sockets.find(socket => socket[0] != room.game.currentTurn)[0];

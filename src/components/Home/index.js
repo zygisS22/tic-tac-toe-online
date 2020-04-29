@@ -52,7 +52,7 @@ const Home = () => {
 
         socketIO.on("sendUsername", data => {
 
-            if (data.length > 0) {
+            if (data && data.length > 0) {
                 setUsername(data)
                 setAllowChange(false)
             }
@@ -72,6 +72,7 @@ const Home = () => {
     return (
         <div>
             <h2 align="center">TIC TAC TOE</h2>
+            <h3 align="center">ONLINE</h3>
 
             <div className="form-flex">
                 <h3 align="center">Username</h3>
@@ -82,30 +83,12 @@ const Home = () => {
             </div>
 
 
-
             <div className="form-flex">
                 <h3 align="center">Create new Room</h3>
                 <button onClick={() => create()}>Create</button>
             </div>
 
-            <div className="form-flex">
-                <h3 align="center">Join a Room</h3>
-                <label>room identifier</label>
-                <input type="text" />
-                <label>password</label>
-                <input type="text" />
-                <button>Connect</button>
-            </div>
-
             {socketIO && (<RoomList />)}
-
-
-
-
-
-
-
-
 
         </div>
 

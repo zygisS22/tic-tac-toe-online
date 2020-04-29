@@ -5,6 +5,11 @@ import socketIO from "../socket-client";
 import { useHistory } from "react-router-dom"
 
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faCircle } from '@fortawesome/free-regular-svg-icons'
+
+
 const Game = () => {
 
     const [gameStatus, setGameStatus] = useState(false)
@@ -13,18 +18,17 @@ const Game = () => {
     const history = useHistory()
 
 
-    // socketIO.on("initGame", function () {
-
-    //     console.log("inicia esto ya")
-    //     socketIO.removeListener("initGame")
-    //     socketIO.emit("startGame")
-    // });
+    const circle = <FontAwesomeIcon icon={faCircle} color="blue" />
+    const times = <FontAwesomeIcon icon={faTimes} color="red" />
 
     useEffect(() => {
 
         console.log(socketIO)
 
-        socketIO.on("joinedRoom", function () {
+        socketIO.on("joinedRoom", function (room) {
+
+            console.log("JOINED", room)
+            setGameInfo(room)
             socketIO.emit("ready")
         });
 
@@ -47,11 +51,23 @@ const Game = () => {
 
     }, []);
 
+
+    const leaveMatch = () => {
+
+        console.log("leave", gameInfo)
+
+        socketIO.emit("leaveRoom", gameInfo)
+
+        history.push("/")
+    }
+
     return (
-        <div>
-            <h2>Game</h2><br />
-            {gameInfo && gameInfo.sockets && (<h3>{gameInfo.sockets[0][1]} - {gameInfo.sockets[1][1]}</h3>)}
-            <button onClick={() => history.push("/")}>Go back</button>
+        <div className="game-container">
+            <h2 align="center">Game</h2>
+            {gameInfo && (<h3 align="center">{gameInfo.id}</h3>)}
+            <button onClick={() => leaveMatch()}>Leave</button>
+            {gameInfo && gameInfo.sockets && gameInfo.sockets.length > 1 && (<h3>{gameInfo.sockets[0][1]} {times}  |  {gameInfo.sockets[1][1]} {circle}</h3>)}
+
             {gameStatus == "playing" ? (<Board gameInfo={gameInfo} player={player} />) : gameStatus == "finished" ? (
                 <div>
                     {gameInfo.game.winner == "draw" ? (<h2> {gameInfo.game.winner} !</h2>) : <h2>Winner {gameInfo.game.winner} !</h2>}

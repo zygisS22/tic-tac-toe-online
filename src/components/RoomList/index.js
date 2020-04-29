@@ -29,10 +29,15 @@ const RoomList = () => {
     }, [])
 
     return (
-        <div>
+        <div className="room-list">
             <h2>rooms available</h2>
             {rooms && rooms.map((value, index) => {
-                return <div key={index}>Room id {value.id}  <button onClick={() => joinRoom(value)}><span>entrar</span></button></div>
+
+                if (value.sockets.length < 2) {
+                    return <div className="room-item" key={index}>Room id {value.id}  <button onClick={() => joinRoom(value)}><span>entrar</span></button></div>
+                }
+
+
             })}
         </div>
 
