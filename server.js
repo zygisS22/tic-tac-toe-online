@@ -170,6 +170,8 @@ io.on("connection", (socket) => {
             clearRoom(room.id)
         }
 
+        socket.broadcast.in(room.id).emit("abandonRoom", room)
+
 
     })
 

@@ -23,14 +23,14 @@ const RoomList = () => {
             setRooms(data)
         })
 
-        // return () => {
-        //     socketIO.off("roomList")
-        // }
+        return () => {
+            socketIO.off("roomList")
+        }
     }, [])
 
     return (
         <div className="room-list">
-            <h2>rooms available</h2>
+            <h2 align="center">rooms available</h2>
             {rooms && rooms.map((value, index) => {
 
                 if (value.sockets.length < 2) {

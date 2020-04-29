@@ -18,8 +18,8 @@ const Game = () => {
     const history = useHistory()
 
 
-    const circle = <FontAwesomeIcon icon={faCircle} color="blue" />
-    const times = <FontAwesomeIcon icon={faTimes} color="red" />
+    const circle = <FontAwesomeIcon icon={faCircle} color="red" />
+    const times = <FontAwesomeIcon icon={faTimes} color="blue" />
 
     useEffect(() => {
 
@@ -47,6 +47,11 @@ const Game = () => {
             console.log("game Finished", room)
             setGameInfo(room)
             setGameStatus("finished")
+        })
+
+        socketIO.on("abandonRoom", function (room) {
+            console.log("Abandon", room)
+            history.push("/")
         })
 
     }, []);

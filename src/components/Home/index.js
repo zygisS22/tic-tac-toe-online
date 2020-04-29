@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from "react"
 import { v4 as uuidv4 } from 'uuid';
-
 import { useHistory } from "react-router-dom"
-
 import RoomList from "../RoomList"
-
 import socketIO from "../socket-client";
-
-
-
 
 const Home = () => {
 
-    //const [socketIO, setSocketIO] = useState(socketIOClient(process.env.REACT_APP_SOCKET_ENDPOINT))
     const [roomId, setRoomId] = useState(null)
     const [username, setUsername] = useState("")
     const [allowChange, setAllowChange] = useState(true)
@@ -43,11 +36,6 @@ const Home = () => {
 
     useEffect(() => {
 
-        // socketIO.on("joinedRoom", function (data) {
-        //     console.log(data);
-        // });
-
-
         socketIO.emit("getUsername")
 
         socketIO.on("sendUsername", data => {
@@ -57,12 +45,11 @@ const Home = () => {
                 setAllowChange(false)
             }
 
-
         })
 
 
         return () => {
-            socketIO.off("joinedRoom")
+            socketIO.off("sendUsername")
         }
 
 
@@ -82,13 +69,20 @@ const Home = () => {
                 {allowChange && (<button onClick={() => lockUsername()}>set</button>)}
             </div>
 
+            {!allowChange && (
+                <React.Fragment>
 
-            <div className="form-flex">
-                <h3 align="center">Create new Room</h3>
-                <button onClick={() => create()}>Create</button>
-            </div>
+                    <div className="form-flex">
+                        <h3 align="center">Create new Room</h3>
+                        <button onClick={() => create()}>Create</button>
+                    </div>
 
-            {socketIO && (<RoomList />)}
+                    {socketIO && (<RoomList />)}
+
+                </React.Fragment>
+            )}
+
+
 
         </div>
 
