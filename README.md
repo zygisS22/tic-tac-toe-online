@@ -24,8 +24,8 @@ Enjoy :D
 ### Images
 
 
-![photo1](images/README4.jpg?raw=true "photo1")
-![photo2](images/README3.jpg?raw=true "photo2")
-![photo3](images/README1.jpg?raw=true "photo3")
-![photo4](images/README2.jpg?raw=true "photo4")
+![photo1](images/README4.PNG?raw=true "photo1")
+![photo2](images/README3.PNG?raw=true "photo2")
+![photo3](images/README1.PNG?raw=true "photo3")
+![photo4](images/README2.PNG?raw=true "photo4")
 
